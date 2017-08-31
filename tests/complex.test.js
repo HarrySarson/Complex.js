@@ -528,10 +528,10 @@ var constructorTests = [{
     expect: "0"
   }, {
     set: "foo",
-    expect: "SyntaxError: Invalid Param"
+    error: "SyntaxError: Invalid Param"
   }, {
     set: {},
-    expect: "SyntaxError: Invalid Param"
+    error: "SyntaxError: Invalid Param"
   }, {
     set: " + i",
     expect: "i"
@@ -561,25 +561,25 @@ var constructorTests = [{
     expect: "-5"
   }, {
     set: " + 7  - i  +  3i   -  +  +  +  + 43  +  2i  -  i4  +  -  33  +  65 - 1	 + ",
-    expect: "SyntaxError: Invalid Param"
+    error: "SyntaxError: Invalid Param"
   }, {
     set: "-3x + 4",
-    expect: "SyntaxError: Invalid Param"
+    error: "SyntaxError: Invalid Param"
   }, {
     set: "- + 7",
     expect: "-7"
   }, {
     set: "4 5i",
-    expect: "SyntaxError: Invalid Param"
+    error: "SyntaxError: Invalid Param"
   }, {
     set: "-",
-    expect: "SyntaxError: Invalid Param"
+    error: "SyntaxError: Invalid Param"
   }, {
     set: "2.2e-1-3.2e-1i",
     expect: "0.22 - 0.32i"
   }, {
     set: "2.2.",
-    expect: "SyntaxError: Invalid Param"
+    error: "SyntaxError: Invalid Param"
   }, {
     set: {r: 0, phi: 4},
     expect: "0"
@@ -592,36 +592,38 @@ var constructorTests = [{
 describe("Complex", function () {
 
   for (var i = 0; i < functionTests.length; i++) {
-  
+
     (function(test) {
       assert(test.hasOwnProperty('fn'), 'has fn property');
       assert(test.hasOwnProperty('set'), 'has set property');
-      assert(test.hasOwnProperty('expect'), 'has expect property');
-      
+      assert(test.hasOwnProperty('expect') ^ test.hasOwnProperty('error'), 'has expect property');
+
       it(test.fn + " " + test.set + ", " + (test.param || ""), function () {
         try {
           assert.equal(test.expect, new Complex(test.set)[test.fn](test.param).toString());
         } catch (e) {
-          assert.equal(e.toString(), test.expect.toString());
+          if (test.hasOwnProperty('error'))
+            assert.equal(e.toString(), test.error.toString());
         }
-      });      
+      });
     })(functionTests[i]);
   }
-   
+
   for (var i = 0; i < constructorTests.length; i++) {
-  
+
     (function(test) {
       assert(test.hasOwnProperty('set'), 'has set property');
-      assert(test.hasOwnProperty('expect'), 'has expect property');
-      
+      assert(test.hasOwnProperty('expect') ^ test.hasOwnProperty('error'), 'has expect property');
+
       it("new Complex(" + test.set + ")", function () {
         try {
           assert.equal(test.expect, new Complex(test.set).toString());
         } catch (e) {
-          assert.equal(e.toString(), test.expect.toString());
+          if (test.hasOwnProperty('error'))
+            assert.equal(e.toString(), test.error.toString());
         }
       });
-      
+
     })(constructorTests[i]);
   }
 });
