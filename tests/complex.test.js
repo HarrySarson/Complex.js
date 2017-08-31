@@ -2,40 +2,7 @@ var assert = require("assert");
 
 var Complex = require("../complex.min");
 
-var tests = [{
-    set: null,
-    expect: "0"
-  }, {
-    set: undefined,
-    expect: "0"
-  }, {
-    set: "foo",
-    expect: "SyntaxError: Invalid Param"
-  }, {
-    set: {},
-    expect: "SyntaxError: Invalid Param"
-  }, {
-    set: " + i",
-    expect: "i"
-  }, {
-    set: "3+4i",
-    expect: "3 + 4i"
-  }, {
-    set: "i",
-    expect: "i"
-  }, {
-    set: "3",
-    expect: "3"
-  }, {
-    set: [9, 8],
-    expect: "9 + 8i"
-  }, {
-    set: "2.3",
-    expect: "2.3"
-  }, {
-    set: {re: -Infinity, im: 0},
-    expect: "-Infinity"
-  }, {
+var functionTests = [{
     set: Complex.I,
     fn: "mul",
     param: Complex(Math.PI).exp(),
@@ -45,9 +12,6 @@ var tests = [{
     fn: "mul",
     param: 3,
     expect: "3 + 12i"
-  }, {
-    set: 0,
-    expect: "0"
   }, {
     set: "4 + 3i",
     fn: "add",
@@ -540,15 +504,6 @@ var tests = [{
     fn: "cot",
     expect: "1.6636768291213935e-7 - 1.0000001515864902i"
   }, {
-    set: " + 7  - i  +  3i   -  +  +  +  + 43  +  2i  -  i4  +  -  33  +  65 - 1	",
-    expect: "-5"
-  }, {
-    set: " + 7  - i  +  3i   -  +  +  +  + 43  +  2i  -  i4  +  -  33  +  65 - 1	 + ",
-    expect: "SyntaxError: Invalid Param"
-  }, {
-    set: "-3x + 4",
-    expect: "SyntaxError: Invalid Param"
-  }, {
     set: Complex(1, 1).sub(0, 1), // Distance
     fn: "abs",
     expect: "1"
@@ -562,6 +517,54 @@ var tests = [{
     fn: "add",
     param: "i",
     expect: "6.123233995736766e-17 + 2i"
+  }
+];
+
+var constructorTests = [{
+    set: null,
+    expect: "0"
+  }, {
+    set: undefined,
+    expect: "0"
+  }, {
+    set: "foo",
+    expect: "SyntaxError: Invalid Param"
+  }, {
+    set: {},
+    expect: "SyntaxError: Invalid Param"
+  }, {
+    set: " + i",
+    expect: "i"
+  }, {
+    set: "3+4i",
+    expect: "3 + 4i"
+  }, {
+    set: "i",
+    expect: "i"
+  }, {
+    set: "3",
+    expect: "3"
+  }, {
+    set: [9, 8],
+    expect: "9 + 8i"
+  }, {
+    set: "2.3",
+    expect: "2.3"
+  }, {
+    set: {re: -Infinity, im: 0},
+    expect: "-Infinity"
+  }, {
+    set: 0,
+    expect: "0"
+  }, {
+    set: " + 7  - i  +  3i   -  +  +  +  + 43  +  2i  -  i4  +  -  33  +  65 - 1	",
+    expect: "-5"
+  }, {
+    set: " + 7  - i  +  3i   -  +  +  +  + 43  +  2i  -  i4  +  -  33  +  65 - 1	 + ",
+    expect: "SyntaxError: Invalid Param"
+  }, {
+    set: "-3x + 4",
+    expect: "SyntaxError: Invalid Param"
   }, {
     set: "- + 7",
     expect: "-7"
@@ -588,32 +591,38 @@ var tests = [{
 
 describe("Complex", function () {
 
-  for (var i = 0; i < tests.length; i++) {
-
-    (function (i) {
-
-      if (tests[i].fn) {
-
-        it((tests[i].fn || "") + " " + tests[i].set + ", " + (tests[i].param || ""), function () {
-          try {
-            assert.equal(tests[i].expect, new Complex(tests[i].set)[tests[i].fn](tests[i].param).toString());
-          } catch (e) {
-            assert.equal(e.toString(), tests[i].expect.toString());
-          }
-        });
-
-      } else {
-
-        it((tests[i].fn || "") + "" + tests[i].set, function () {
-          try {
-            assert.equal(tests[i].expect, new Complex(tests[i].set).toString());
-          } catch (e) {
-            assert.equal(e.toString(), tests[i].expect.toString());
-          }
-        });
-      }
-
-    })(i);
+  for (var i = 0; i < functionTests.length; i++) {
+  
+    (function(test) {
+      assert(test.hasOwnProperty('fn'), 'has fn property');
+      assert(test.hasOwnProperty('set'), 'has set property');
+      assert(test.hasOwnProperty('expect'), 'has expect property');
+      
+      it(test.fn + " " + test.set + ", " + (test.param || ""), function () {
+        try {
+          assert.equal(test.expect, new Complex(test.set)[test.fn](test.param).toString());
+        } catch (e) {
+          assert.equal(e.toString(), test.expect.toString());
+        }
+      });      
+    })(functionTests[i]);
+  }
+   
+  for (var i = 0; i < constructorTests.length; i++) {
+  
+    (function(test) {
+      assert(test.hasOwnProperty('set'), 'has set property');
+      assert(test.hasOwnProperty('expect'), 'has expect property');
+      
+      it("new Complex(" + test.set + ")", function () {
+        try {
+          assert.equal(test.expect, new Complex(test.set).toString());
+        } catch (e) {
+          assert.equal(e.toString(), test.expect.toString());
+        }
+      });
+      
+    })(constructorTests[i]);
   }
 });
 
