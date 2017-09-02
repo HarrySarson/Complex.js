@@ -586,6 +586,30 @@ var tests = [{
   }
 ];
 
+function stringifyArgs(args) {
+  return args == null
+    ? ""
+    : JSON.stringify(args);
+}
+
+function describeTest(test) {
+  var ctor = "new Complex(" + stringifyArgs(test.set) + ")";
+
+  var fnCall = test.fn == null
+    ? ""
+    : "." + test.fn + "(" + stringifyArgs(test.param) + ")";
+
+  var expectedResult = test.expect == null
+    ? ""
+    : " === " + stringifyArgs(test.expect);
+
+  var error = test.error == null
+    ? ""
+    : " should throw " + test.error;
+
+  return ctor + fnCall + expectedResult + error;
+}
+
 describe("Complex", function () {
 
   for (var i = 0; i < tests.length; i++) {
@@ -594,7 +618,7 @@ describe("Complex", function () {
 
       if (tests[i].fn) {
 
-        it((tests[i].fn || "") + " " + tests[i].set + ", " + (tests[i].param || ""), function () {
+        it(describeTest(test), function () {
           try {
             assert.equal(tests[i].expect, new Complex(tests[i].set)[tests[i].fn](tests[i].param).toString());
           } catch (e) {
@@ -603,8 +627,7 @@ describe("Complex", function () {
         });
 
       } else {
-
-        it((tests[i].fn || "") + "" + tests[i].set, function () {
+        it(describeTest(test), function () {
           try {
             assert.equal(tests[i].expect, new Complex(tests[i].set).toString());
           } catch (e) {
