@@ -591,7 +591,7 @@ function describeTest(test) {
 
   var fnCall = test.fn == null
     ? ""
-    : "." + test.fn + "(" + JSON.stringify(test.param) + ")";
+    : "." + test.fn + "(" + (test.param == null ? "" : JSON.stringify(test.param)) + ")";
 
   var expectedResult = test.expect == null
     ? ""
