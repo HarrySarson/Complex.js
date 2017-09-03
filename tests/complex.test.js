@@ -684,7 +684,7 @@ describe("Complex", function () {
 
       if (tests[i].fn) {
 
-        it(describeTest(test), function () {
+        it(describeTest(tests[i]), function () {
           try {
             assert.equal(tests[i].expect, new Complex(tests[i].set)[tests[i].fn](tests[i].param).toString());
           } catch (e) {
@@ -693,7 +693,7 @@ describe("Complex", function () {
         });
 
       } else {
-        it(describeTest(test), function () {
+        it(describeTest(tests[i]), function () {
           try {
             assert.equal(tests[i].expect, new Complex(tests[i].set).toString());
           } catch (e) {
