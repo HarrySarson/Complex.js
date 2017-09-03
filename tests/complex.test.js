@@ -695,7 +695,7 @@ describe("Complex constructor", function () {
       });
     })(functionTests[i]);
   }
-}
+});
 
 describe("Complex functions", function() {
 
