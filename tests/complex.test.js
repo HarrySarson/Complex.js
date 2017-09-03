@@ -652,22 +652,16 @@ var tests = [{
   }
 ];
 
-function stringifyArgs(args) {
-  return args == null
-    ? ""
-    : JSON.stringify(args);
-}
-
 function describeTest(test) {
-  var ctor = "new Complex(" + stringifyArgs(test.set) + ")";
+  var ctor = "new Complex(" + JSON.stringify(test.set) + ")";
 
   var fnCall = test.fn == null
     ? ""
-    : "." + test.fn + "(" + stringifyArgs(test.param) + ")";
+    : "." + test.fn + "(" + JSON.stringify(test.param) + ")";
 
   var expectedResult = test.expect == null
     ? ""
-    : " === " + stringifyArgs(test.expect);
+    : " === " + JSON.stringify(test.expect);
 
   var error = test.error == null
     ? ""
